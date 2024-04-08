@@ -1,0 +1,36 @@
+{% extends 'musicbeats/basic.htm' %}
+{% block title %}Login{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-end align-items-center" style=" height: 91.8vh;">
+        <div class="col-md-6" style="overflow: hidden;"> <!-- Added style="overflow: hidden;" to prevent image overflow -->
+            <img src="/static/musicbeats/login.jpg" class="img-fluid w-100" style="height:800px" alt="Login Image">
+        </div>
+        <div class="col-md-6 d-flex justify-content-center">
+            <div class="container my-3">
+                <form action="/musicbeats/login" method="POST">
+                    {% csrf_token %}
+                    <div class="card p-4 mb-4" style="background-color: #E6D9BF; border-color: #D6C3A0;">
+                        <h5 class="card-title">Login to Your Account</h5>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Username</label>
+                            <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="username" placeholder="Your Username">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Password</label>
+                            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" name="password">
+                        </div>
+                        <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                            <label class="form-check-label" for="exampleCheck1">Remember me</label>
+                        </div>
+                        <button type="submit" class="btn btn-dark">Login</button>
+                        <a href="/password/reset" class="btn btn-link" style="color: #343a40;">Forgot Password?</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

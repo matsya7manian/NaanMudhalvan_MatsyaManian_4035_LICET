@@ -1,0 +1,52 @@
+{% extends 'musicbeats/basic.htm' %}
+{% block title %}Upload Your Music{% endblock %}
+
+{% block body %}
+<div class="container my-3">
+    <div class="card p-4" style="background-color: #0c0d0e; border-color: #d6d8db;">
+        <h2 class="text-center" style="color: #1b236c;">Upload Your Music</h2>
+
+        <form action="/musicbeats/upload" enctype="multipart/form-data" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="musicName">Your Music Name</label>
+                <input type="text" class="form-control" id="musicName" name="name" placeholder="Your Song Name">
+            </div>
+
+            <div class="form-group">
+                <label for="singerName">Singer Name</label>
+                <input type="text" class="form-control" id="singerName" name="singer" placeholder="Singer Name">
+            </div>
+
+            <div class="form-group">
+                <label for="tags">Tags</label>
+                <input type="text" class="form-control" id="tags" name="tag" placeholder="Tags (Separated By Commas)">
+            </div>
+
+            <div class="form-group">
+                <label for="imageLink">Image Link</label>
+                <input type="text" class="form-control" id="imageLink" name="image" placeholder="Link to Image">
+            </div>
+
+            <div class="form-group">
+                <label for="movieName">Movie Name</label>
+                <input type="text" class="form-control" id="movieName" name="movie" placeholder="Movie name in which this song is there">
+            </div>
+
+            <div class="form-group">
+                <label for="credit">Credit</label>
+                <input type="text" class="form-control" id="credit" name="credit" placeholder="Add Credit Link">
+            </div>
+
+            <div class="form-group">
+                <label for="musicFile">Upload Music File</label>
+                <input type="file" class="form-control-file" id="musicFile" name="file">
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary" style="background-color: #1b236c;">Upload</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

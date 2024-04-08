@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="/media/images/soundmanagerv297a-20170601/script/soundmanager2.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif; /* Change font family */
+            background-color: #101214; /* Dark background color */
+            color: #fff; /* White text color */
+        }
+
+        .navbar {
+            background-color: #1b236c !important; /* Dark navbar background */
+        }
+
+        .navbar-dark .navbar-brand {
+            color: #fff !important; /* White navbar brand text */
+        }
+
+        .navbar-dark .navbar-toggler-icon {
+            background-color: #fff; /* White toggler icon */
+        }
+
+        .navbar-dark .navbar-nav .nav-link {
+            color: #fff !important; /* White nav links */
+        }
+
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: #d6d0b7 !important; /* Light grey on hover */
+        }
+
+        .btn-danger {
+            background-color: #1b236c; /* Red for danger button */
+            border-color: #1b236c; /* Red for danger button border */
+            font-weight: bold; /* Bold font for button text */
+        }
+
+        .btn-danger:hover {
+            background-color: rgb(73, 62, 122); /* Darker red on hover */
+            border-color: rgb(73, 62, 122); /* Darker red on hover */
+        }
+
+        .btn-danger:focus, .btn-danger.focus {
+            box-shadow: 0 0 0 0.2rem rgba(217, 83, 79, 0.5); /* Red shadow on focus */
+        }
+
+        .btn-danger.disabled, .btn-danger:disabled {
+            background-color: rgba(91, 11, 63, 0.815); /* Red for disabled button */
+            border-color: rgba(91, 11, 63, 0.815); /* Red for disabled button border */
+        }
+    </style>
+
+    <title>{% block title %} {% endblock %}</title>
+</head>
+<body>
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">MusicBeats</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/musicbeats/songs/">All Songs</a>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-1 search-box" id="searchInput" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="search()" style="background-color:#1b236c;color: #c2b8b8; border-color: #f2e9e9;">Search</button>
+        </form>
+    </div>
+    {% if user.is_authenticated %}
+                <ul class="navbar-nav ml-auto"></ul>
+                <li class="nav nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" style="color: white;" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Welcome {{request.user}}</a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <a class="dropdown-item" href="/musicbeats/c/{{request.user}}">Your Channel</a>
+                      <a class="dropdown-item" href="/musicbeats/upload">Upload Music</a>
+                      <a class="dropdown-item" href="/musicbeats/watchlater">Listen Later</a>
+                      <a class="dropdown-item" href="/musicbeats/history">History</a>
+                      <a class="dropdown-item" onclick="logout()">Logout</a>
+                    </div>
+                  </li>
+                </ul>
+                <script>
+                    function logout(){
+                        Swal.fire({
+                            title: 'Are you sure you want to Log out?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#1b236c',
+                            cancelButtonColor: ' #1b236c',
+                            confirmButtonText: 'Yes!'
+                            }).then((result) => {
+                            if (result.value) {
+                                document.location = "/musicbeats/logout_user"
+                            }
+                        })
+                    }
+                    function search() {
+                var searchQuery = document.getElementById('searchInput').value.trim();
+                if (searchQuery !== '') {
+                    fetch('/musicbeats/search/?q=' + searchQuery)
+                    .then(response => response.json())
+                    .then(data => {
+                        displaySearchResults(data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching search results:', error);
+                    });
+                }
+            }
+
+             function displaySearchResults(results) {
+            var searchResultsDiv = document.getElementById('searchResults');
+            searchResultsDiv.innerHTML = '';
+
+            if (results.length > 0) {
+                // Display search results
+                searchResultsDiv.style.display = 'block'; // Show the search results container
+                results.forEach(song => {
+                    var cardDiv = document.createElement('div');
+                    cardDiv.className = 'col-md-4 mb-4';
+                    cardDiv.innerHTML = `
+                        <div class="card">
+                            <img src="${song.image}" class="card-img-top" alt="...">
+                            <div class="card-body text-center" style="background-color: white;">
+                                <h5 class="card-title mb-3">${song.name}</h5>
+                                <p class="card-text"><strong>Tags:</strong> ${song.tags}</p>
+                                <p class="card-text"><strong>Movie:</strong> ${song.movie}</p>
+                                <a href="/musicbeats/songs/${song.song_id}" class="btn btn-outline-danger btn-lg">Listen Song</a>  
+                            </div>
+                        </div>
+                    `;
+                    searchResultsDiv.appendChild(cardDiv);
+                });
+            } else {
+                // Hide search results if no results found
+                searchResultsDiv.style.display = 'none';
+            }
+        }
+
+                </script>
+
+        {% else %}
+        <div class="my-2" style="padding-left: 1%;">
+            <a href="/musicbeats/login"><button class="btn btn-sm btn-danger">Login</button></a>
+            <a href="/musicbeats/signup"><button class="btn btn-sm btn-danger">Signup</button></a>
+        </div>
+        {% endif %}
+    </nav>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-12" id="searchResults" style="display: none;"> <!-- Initially hide the search results -->
+                <!-- Search results will be displayed here -->
+            </div>
+        </div>
+    </div>
+    {% block body %}
+
+    {% endblock %}
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    {% block js %}
+    {% endblock %}
+</body> 
+</html>
